@@ -8,7 +8,7 @@ setup(
     author='Hady Eslam',
     author_email='abdoaslam000@gmail.com',
     license='Apache',
-    packages=[find_packages()],
+    packages=find_packages(),
     install_requires=[
         'isort==4.3.21',
         'black==23.1.0',
