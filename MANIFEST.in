@@ -1,1 +1,1 @@
-recursive-include auto_tests_generator *
+recursive-include auto_tests_generator/ *

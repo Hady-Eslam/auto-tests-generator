@@ -9,12 +9,12 @@ setup(
     author_email='abdoaslam000@gmail.com',
     license='Apache',
     packages=find_packages(),
+    include_package_data=True,
     install_requires=[
         'isort==4.3.21',
         'black==23.1.0',
         'autoflake==1.7.8',
     ],
-
     classifiers=[
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.4',
