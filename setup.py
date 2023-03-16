@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name='auto_tests_generator',
@@ -8,7 +8,7 @@ setup(
     author='Hady Eslam',
     author_email='abdoaslam000@gmail.com',
     license='Apache',
-    packages=['auto_tests_generator'],
+    packages=[find_packages()],
     install_requires=[
         'isort==4.3.21',
         'black==23.1.0',
