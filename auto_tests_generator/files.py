@@ -26,7 +26,7 @@ class FilesHandler:
 
         self.__urls_path = self.__generated_tests_path / self.__urls_path_name
 
-        self.__templates_path = self.__current_path / 'auto_tests_generator' / 'templates' # noqa
+        self.__templates_path = self.__current_path / 'templates' # noqa
 
     def prepare_tests_folder(self):
         self.__remove_old_folder()
