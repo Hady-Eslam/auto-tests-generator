@@ -1,6 +1,5 @@
 import importlib
 
-from django.conf import settings
 from django.urls import URLPattern, URLResolver
 
 from auto_tests_generator.files import FilesHandler
@@ -11,8 +10,9 @@ class URLHandler:
         URLs Tests Handler
     """
 
-    def __init__(self, files_handler: FilesHandler):
+    def __init__(self, files_handler: FilesHandler, root_urlconfig):
         self.__files_handler = files_handler
+        self.__root_urlconfig = root_urlconfig
         self.__urls = []
 
     def __get_urls(self, _url_list=[], append=[]):
@@ -39,7 +39,7 @@ class URLHandler:
             Load All URLs In The System
         """
         # Load urlconf file from settings ROOT_URLCONF
-        urlconf = importlib.import_module(settings.ROOT_URLCONF)
+        urlconf = importlib.import_module(self.__root_urlconfig)
 
         # Load Urls
         self.__get_urls(urlconf.urlpatterns)

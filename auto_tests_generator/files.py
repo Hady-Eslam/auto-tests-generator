@@ -3,7 +3,6 @@ from pathlib import Path
 import shutil
 import sys
 
-from django.conf import settings
 from django.template import Context, Template
 
 import autoflake
@@ -17,9 +16,10 @@ class FilesHandler:
 
     __urls_path_name = 'urls'
 
-    def __init__(self, tests_path, current_path) -> None:
+    def __init__(self, tests_path, current_path, isort_settings_path) -> None:
         self.__tests_path = tests_path
         self.__current_path = current_path
+        self.__isort_settings_path = isort_settings_path
 
         self.__generated_tests_path = \
             Path(self.__tests_path) / self.__generated_tests_folder_name
@@ -62,7 +62,7 @@ class FilesHandler:
         """
         isort.SortImports(
             file_path=file_path,
-            settings_path=str(settings.BASE_DIR.path('.isort.cfg'))
+            settings_path=self.__isort_settings_path
         )
 
     def __use_black(self, content):
