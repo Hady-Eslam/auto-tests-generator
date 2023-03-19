@@ -1,5 +1,6 @@
 import importlib
 
+from django.conf import settings
 from django.urls import URLPattern, URLResolver
 
 from auto_tests_generator.files import FilesHandler
@@ -39,10 +40,19 @@ class URLHandler:
             Load All URLs In The System
         """
         # Load urlconf file from settings ROOT_URLCONF
+        old_value = None
+        settings.DEBUG = old_value
+        settings.DEBUG = False
+
         urlconf = importlib.import_module(self.__root_urlconfig)
+        urlconf = importlib.reload(urlconf)
 
         # Load Urls
         self.__get_urls(urlconf.urlpatterns)
+
+        settings.DEBUG = old_value
+        urlconf = importlib.import_module(self.__root_urlconfig)
+        urlconf = importlib.reload(urlconf)
 
     def __filter_url(self, url: str):
         """
