@@ -8,7 +8,7 @@
 
         assert (
             ''.join(_url['path'])
-            == {{ url.path }} # noqa
+            == r{{ url.path }} # noqa
         )
         {% if url.name_is_none %}assert _url['url'].name is None{% else %}assert _url['url'].name == {{ url.name }}{% endif %}
         assert _url['url'].callback{{ url.callback_view }} == {{ url.callback }}
