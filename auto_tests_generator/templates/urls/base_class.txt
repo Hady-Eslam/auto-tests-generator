@@ -1,0 +1,36 @@
+{% autoescape off %}import pytest
+from django.conf import settings
+from django.urls import URLPattern, URLResolver
+import importlib
+
+
+class TestURLs:
+
+    @pytest.fixture(autouse=True)
+    def setup_class(self):
+        settings.DEBUG = True
+        self.__urls = []
+
+        urlconf = importlib.import_module(settings.ROOT_URLCONF)
+
+        self.__get_urls(urlconf.urlpatterns)
+
+    def __get_urls(self, _url_list=[], append=[]):
+        for _url in _url_list:
+            if isinstance(_url, URLResolver):
+                self.__get_urls(_url.url_patterns, append + [str(_url.pattern)])
+            elif isinstance(_url, URLPattern):
+                self.__urls.append({
+                    'path': append + [str(_url.pattern)],
+                    'name': _url.name,
+                    'url': _url,
+                })
+
+    def test_urls_count(self):
+        assert len(self.__urls) == {{ urls_count }}
+
+    {% for test in tests %}
+    {{ test }}
+    {% endfor %}
+
+{% endautoescape %}

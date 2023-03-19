@@ -1,0 +1,18 @@
+{% autoescape off %}
+
+    def test_{{ url.filtered_path }}( # noqa
+        self
+    ):
+        {{ url.callback_import }}
+        _url = self.__urls[{{ url.index }}]
+
+        assert (
+            ''.join(_url['path'])
+            == r{{ url.path }} # noqa
+        )
+        {% if url.name_is_none %}assert _url['url'].name is None{% else %}assert _url['url'].name == {{ url.name }}{% endif %}
+        assert _url['url'].callback{{ url.callback_view }} == {{ url.callback }}
+        {% if url.callback_is_model_view_set %}assert _url['url'].callback.actions == {{ url.actions }}
+        {% endif %}
+
+{% endautoescape %}
