@@ -116,9 +116,9 @@ class PermissionsHandler:
 
             for role in self.__roles:
 
-                if api_name not in self.__initial_permissions:
+                if api_name not in permissions:
                     _api_permissions[api_name] = {}
-                    if isinstance(api['api'], ModelViewSet):
+                    if issubclass(api['api'], ModelViewSet):
                         _api_permissions[role] = {
                             'list': False,
                             'create': False,
@@ -136,8 +136,8 @@ class PermissionsHandler:
                             'DELETE': False
                         }
 
-                elif role not in self.__initial_permissions[api_name]:
-                    if isinstance(api['api'], ModelViewSet):
+                elif role not in permissions[api_name]:
+                    if issubclass(api['api'], ModelViewSet):
                         _api_permissions[role] = {
                             'list': False,
                             'create': False,
@@ -156,8 +156,7 @@ class PermissionsHandler:
                         }
 
                 else:
-                    _api_permissions[role] = \
-                        self.__initial_permissions[api_name][role]
+                    _api_permissions[role] = permissions[api_name][role]
 
             _prepared_permissions[api_name] = _api_permissions
 
@@ -248,7 +247,7 @@ class PermissionsHandler:
 
             _role_tests = []
             for role in self.__roles:
-                if isinstance(api['api'], ModelViewSet):
+                if issubclass(api['api'], ModelViewSet):
                     _role_tests.append(
                         self.__get_roles_viewset_tests(
                             role, api_name, self.__permissions[api_name],

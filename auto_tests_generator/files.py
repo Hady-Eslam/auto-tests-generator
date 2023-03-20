@@ -130,7 +130,7 @@ class FilesHandler:
         content = self.__use_black(content)
 
         with open(
-                app_path / f'test_{api.__name__}_permissions.py', "x"
+                app_path / f'test_{api.__name__}_permissions.py', "w"
         ) as file:
             file.write(content)
 
