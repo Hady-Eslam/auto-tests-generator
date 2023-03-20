@@ -5,6 +5,21 @@ import importlib
 
 
 class TestURLs:
+    """
+        For every test the test name will be based on the url that it will
+        test, for example:
+            we have url
+                api/v1/users/<int:user_id>/
+
+            then we will replace "/" slash with "_" underscore
+            and "<" with "_" and ":" with "_" and ">" with "_" so we can
+            get valid function name like this
+            and the result will be
+                ( api_v1_users__int_user_id__ )
+
+            and the test name will be like this
+                ( test_api_v1_users__int_user_id___url )
+    """
 
     @pytest.fixture(autouse=True)
     def setup_class(self):
