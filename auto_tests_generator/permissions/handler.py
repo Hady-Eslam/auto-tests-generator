@@ -111,15 +111,13 @@ class PermissionsHandler:
     def __prepare_permissions(self, permissions: dict):
         _prepared_permissions = {}
 
-        for api_name, api in permissions.items():
+        for api_name, api in self.__apis:
             _api_permissions = {}
 
             for role in self.__roles:
 
-                if role in api:
-                    _api_permissions[role] = api[role]
-                elif api_name in self.__apis:
-                    if issubclass(self.__apis[api_name]['api'], ModelViewSet):
+                if api_name not in self.__permissions[api_name]:
+                    if isinstance(api['api'], ModelViewSet):
                         _api_permissions[role] = {
                             'list': False,
                             'create': False,
@@ -136,6 +134,9 @@ class PermissionsHandler:
                             'PATCH': False,
                             'DELETE': False
                         }
+
+                elif role in self.__permissions[api_name]:
+                    _api_permissions[role] = api[role]
 
             _prepared_permissions[api_name] = _api_permissions
 
