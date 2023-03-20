@@ -117,6 +117,7 @@ class PermissionsHandler:
             for role in self.__roles:
 
                 if api_name not in self.__initial_permissions:
+                    _api_permissions[api_name] = {}
                     if isinstance(api['api'], ModelViewSet):
                         _api_permissions[role] = {
                             'list': False,
@@ -135,7 +136,26 @@ class PermissionsHandler:
                             'DELETE': False
                         }
 
-                elif role in self.__initial_permissions[api_name]:
+                elif role not in self.__initial_permissions[api_name]:
+                    if isinstance(api['api'], ModelViewSet):
+                        _api_permissions[role] = {
+                            'list': False,
+                            'create': False,
+                            'retrieve': False,
+                            'update': False,
+                            'partial_update': False,
+                            'destroy': False,
+                        }
+                    else:
+                        _api_permissions[role] = {
+                            'GET': False,
+                            'POST': False,
+                            'PUT': False,
+                            'PATCH': False,
+                            'DELETE': False
+                        }
+
+                else:
                     _api_permissions[role] = api[role]
 
             _prepared_permissions[api_name] = _api_permissions
