@@ -111,7 +111,7 @@ class PermissionsHandler:
     def __prepare_permissions(self, permissions: dict):
         _prepared_permissions = {}
 
-        for api_name, api in self.__apis:
+        for api_name, api in self.__apis.items():
             _api_permissions = {}
 
             for role in self.__roles:
