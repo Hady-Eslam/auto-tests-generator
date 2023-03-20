@@ -25,27 +25,29 @@ class AutoTestsGenerator:
         )
 
         # Permissions Tests Generator Handler
-        _apps = []
-        if self.__configs['permissions']['apps'] == 'all':
-            _apps = apps
-        else:
-            _apps = self.__configs['permissions']['apps'].split(',')
-            for _app in _apps:
-                if _app not in apps:
-                    raise Exception(f"No app with name {_app} was found")
+        if self.__configs['permissions']['generate_tests']:
+            _apps = []
+            if self.__configs['permissions']['apps'] == 'all':
+                _apps = apps
+            else:
+                _apps = self.__configs['permissions']['apps'].split(',')
+                for _app in _apps:
+                    if _app not in apps:
+                        raise Exception(f"No app with name {_app} was found")
 
-        self.__permissions_handler = PermissionsHandler(
-            files_handler=self.__files_handler,
-            apps=_apps,
-            permissions=permissions,
-            auth0_credentials=auth0_credentials,
-        )
+            self.__permissions_handler = PermissionsHandler(
+                files_handler=self.__files_handler,
+                apps=_apps,
+                permissions=permissions,
+                auth0_credentials=auth0_credentials,
+            )
 
         # Urls Tests Generator Handler
-        self.__urls_handler = URLHandler(
-            files_handler=self.__files_handler,
-            root_urlconfig=root_urlconfig
-        )
+        if self.__configs['urls']['generate_tests']:
+            self.__urls_handler = URLHandler(
+                files_handler=self.__files_handler,
+                root_urlconfig=root_urlconfig
+            )
 
     def prepare(self):
         """
