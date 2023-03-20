@@ -1,0 +1,151 @@
+from unittest.mock import MagicMock
+
+from _pytest.fixtures import FixtureRequest
+from _pytest.monkeypatch import MonkeyPatch
+import pytest
+from rest_framework import status
+from rest_framework.response import Response
+
+from {{ auth_tokens_file_import }} import (
+    get_merchant_auth_token,{% for role in roles %}
+    get_{{ role.role_filtered_name }}_auth_token,{% endfor %}
+)
+
+
+@pytest.fixture(scope='function')
+def mock_anonymous_authenticate(request: FixtureRequest):
+    pass
+
+{% for mock_role in mock_roles %}
+{{ mock_role }}
+{% endfor %}
+@pytest.fixture(scope='function')
+def mock_create_action(request: FixtureRequest):
+    api_action = request.instance.api_action
+    monkeypatch = MonkeyPatch()
+    monkeypatch.setattr(
+        f"{api_action}.create",
+        lambda *args, **kwargs: Response(status=status.HTTP_201_CREATED)
+    )
+    yield monkeypatch
+    monkeypatch.undo()
+
+
+@pytest.fixture(scope='function')
+def mock_list_action(request: FixtureRequest):
+    api_action = request.instance.api_action
+    monkeypatch = MonkeyPatch()
+    monkeypatch.setattr(
+        f"{api_action}.list",
+        lambda *args, **kwargs: Response(status=status.HTTP_200_OK)
+    )
+    yield monkeypatch
+    monkeypatch.undo()
+
+
+@pytest.fixture(scope='function')
+def mock_retrieve_action(request: FixtureRequest):
+    api_action = request.instance.api_action
+    monkeypatch = MonkeyPatch()
+    monkeypatch.setattr(
+        f"{api_action}.retrieve",
+        lambda *args, **kwargs: Response(status=status.HTTP_200_OK)
+    )
+    yield monkeypatch
+    monkeypatch.undo()
+
+
+@pytest.fixture(scope='function')
+def mock_update_action(request: FixtureRequest):
+    api_action = request.instance.api_action
+    monkeypatch = MonkeyPatch()
+    monkeypatch.setattr(
+        f"{api_action}.update",
+        lambda *args, **kwargs: Response(status=status.HTTP_200_OK)
+    )
+    yield monkeypatch
+    monkeypatch.undo()
+
+
+@pytest.fixture(scope='function')
+def mock_partial_update_action(request: FixtureRequest):
+    api_action = request.instance.api_action
+    monkeypatch = MonkeyPatch()
+    monkeypatch.setattr(
+        f"{api_action}.partial_update",
+        lambda *args, **kwargs: Response(status=status.HTTP_200_OK)
+    )
+    yield monkeypatch
+    monkeypatch.undo()
+
+
+@pytest.fixture(scope='function')
+def mock_destroy_action(request: FixtureRequest):
+    api_action = request.instance.api_action
+    monkeypatch = MonkeyPatch()
+    monkeypatch.setattr(
+        f"{api_action}.destroy",
+        lambda *args, **kwargs: Response(status=status.HTTP_204_NO_CONTENT)
+    )
+    yield monkeypatch
+    monkeypatch.undo()
+
+
+@pytest.fixture(scope='function')
+def mock_post_method(request: FixtureRequest):
+    api_action = request.instance.api_action
+    monkeypatch = MonkeyPatch()
+    monkeypatch.setattr(
+        f"{api_action}.post",
+        lambda *args, **kwargs: Response(status=status.HTTP_201_CREATED)
+    )
+    yield monkeypatch
+    monkeypatch.undo()
+
+
+@pytest.fixture(scope='function')
+def mock_get_method(request: FixtureRequest):
+    api_action = request.instance.api_action
+    monkeypatch = MonkeyPatch()
+    monkeypatch.setattr(
+        f"{api_action}.get",
+        lambda *args, **kwargs: Response(status=status.HTTP_200_OK)
+    )
+    yield monkeypatch
+    monkeypatch.undo()
+
+
+@pytest.fixture(scope='function')
+def mock_put_method(request: FixtureRequest):
+    api_action = request.instance.api_action
+    monkeypatch = MonkeyPatch()
+    monkeypatch.setattr(
+        f"{api_action}.put",
+        lambda *args, **kwargs: Response(status=status.HTTP_200_OK)
+    )
+    yield monkeypatch
+    monkeypatch.undo()
+
+
+@pytest.fixture(scope='function')
+def mock_patch_method(request: FixtureRequest):
+    api_action = request.instance.api_action
+    monkeypatch = MonkeyPatch()
+    monkeypatch.setattr(
+        f"{api_action}.patch",
+        lambda *args, **kwargs: Response(status=status.HTTP_200_OK)
+    )
+    yield monkeypatch
+    monkeypatch.undo()
+
+
+@pytest.fixture(scope='function')
+def mock_delete_method(request: FixtureRequest):
+    api_action = request.instance.api_action
+    monkeypatch = MonkeyPatch()
+    monkeypatch.setattr(
+        f"{api_action}.delete",
+        lambda *args, **kwargs: Response(status=status.HTTP_204_NO_CONTENT)
+    )
+    yield monkeypatch
+    monkeypatch.undo()

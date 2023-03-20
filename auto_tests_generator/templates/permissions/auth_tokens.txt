@@ -1,0 +1,88 @@
+from django.conf import settings
+
+from rest_framework.settings import api_settings
+import faker
+
+_faker = faker.Faker(['ar_AE'])
+
+
+class TestToken:
+    """
+    A Test class which validates and wraps an Fake JWT
+    """
+
+    def __init__(self, payload=None):
+        self.payload = payload
+
+    def __repr__(self):
+        return repr(self.payload)
+
+    def __getitem__(self, key):
+        return self.payload[key]
+
+    def __setitem__(self, key, value):
+        self.payload[key] = value
+
+    def __delitem__(self, key):
+        del self.payload[key]
+
+    def __contains__(self, key):
+        return key in self.payload
+
+    def get(self, key, default=None):
+        return self.payload.get(key, default)
+
+    def __str__(self):
+        return super().__str__(self.payload)
+
+    def verify(self):
+        pass
+
+    def verify_token_type(self):
+        pass
+
+    def set_jti(self):
+        pass
+
+    def set_exp(self, claim="exp", from_time=None, lifetime=None):
+        pass
+
+    def set_iat(self, claim="iat", at_time=None):
+        pass
+
+    def check_exp(self, claim="exp", current_time=None):
+        pass
+
+    @classmethod
+    def for_user(cls, user):
+        token = cls()
+        token[api_settings.USER_ID_CLAIM] = user
+
+        return token
+
+    _token_backend = None
+
+    @property
+    def token_backend(self):
+        return None
+
+    def get_token_backend(self):
+        # Backward compatibility.
+        return self.token_backend
+
+{% for role in roles %}
+def get_{{ role.role_filtered_name }}_auth_token():
+    random_auth_token = ''.join([str(_faker.random_int(max=9)) for i in range(15)])
+
+    return TestToken({
+        f"{settings.AUTH0_ROLE_FIELD_NAME}": [
+            "{{ role.role_name }}"
+        ],
+        f"{settings.AUTH0_APP_META_DATA_FIELD_NAME}": {},
+        f"{settings.AUTH0_USER_META_DATA_FIELD_NAME}": {
+            "name": 'Test {{ role.role_name_uppercase }}'
+        },
+        'sub': f"auth0|{random_auth_token}"
+    })
+
+{% endfor %}

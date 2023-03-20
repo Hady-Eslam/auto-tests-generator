@@ -1,0 +1,11 @@
+@pytest.fixture(scope='function')
+def mock_{{ role_name }}_authenticate(request: FixtureRequest):
+    _{{ role_name }} = get_{{ role_name }}_auth_token()
+    monkeypatch = MonkeyPatch()
+    monkeypatch.setattr(
+        "rest_framework_simplejwt.authentication."
+        "JWTStatelessUserAuthentication.authenticate",
+        lambda *args: (MagicMock(), _{{ role_name }})
+    )
+    yield monkeypatch, _{{ role_name }}
+    monkeypatch.undo()

@@ -1,0 +1,45 @@
+import pytest
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.test import APIRequestFactory
+
+from {{ api_module }} import {{ api_name }}
+
+
+class BaseTest{{ api_name }}Permissions:
+
+    @pytest.fixture(autouse=True)
+    def setup_class(self, db, setup_data):
+        self.api_action = '{{ api_action }}'
+{% if is_api %}
+        self.view = {{ api_name }}.as_view()
+
+        @staticmethod
+        def post(*args, **kwargs):
+            return Response(status=status.HTTP_201_CREATED)
+
+        @staticmethod
+        def get(*args, **kwargs):
+            return Response(status=status.HTTP_200_OK)
+
+        @staticmethod
+        def put(*args, **kwargs):
+            return Response(status=status.HTTP_200_OK)
+
+        @staticmethod
+        def patch(*args, **kwargs):
+            return Response(status=status.HTTP_200_OK)
+
+        @staticmethod
+        def delete(*args, **kwargs):
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+        self.view.view_class.post = post
+        self.view.view_class.get = get
+        self.view.view_class.put = put
+        self.view.view_class.patch = patch
+        self.view.view_class.delete = delete
+{% endif %}
+{% for role in testing_roles %}
+{{ role }}
+{% endfor %}
