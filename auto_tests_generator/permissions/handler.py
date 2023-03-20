@@ -118,7 +118,7 @@ class PermissionsHandler:
 
                 if role in api:
                     _api_permissions[role] = api[role]
-                else:
+                elif api_name in self.__apis:
                     if issubclass(self.__apis[api_name]['api'], ModelViewSet):
                         _api_permissions[role] = {
                             'list': False,
@@ -222,21 +222,23 @@ class PermissionsHandler:
         cmd.start_block()
         cmd.info("Generate Permissions Tests...")
 
-        for api_name, api in self.__permissions.items():
+        for api_name, api in self.__apis.items():
 
             _role_tests = []
             for role in self.__roles:
-                if 'create' in api[role]:
+                if isinstance(api['api'], ModelViewSet):
                     _role_tests.append(
                         self.__get_roles_viewset_tests(
-                            role, api_name, api,
-                            self.__apis[api_name]['allowed'])
+                            role, api_name, self.__permissions[api_name],
+                            api['allowed']
+                        )
                     )
                 else:
                     _role_tests.append(
                         self.__get_roles_api_tests(
-                            role, api_name, api,
-                            self.__apis[api_name]['allowed'])
+                            role, api_name, self.__permissions[api_name],
+                            api['allowed']
+                        )
                     )
 
             cmd.start_block()
@@ -245,16 +247,16 @@ class PermissionsHandler:
             content = self.__files_handler.import_template(
                 'permissions/test_permissions.txt', {
                     'api_name': api_name,
-                    'api_module': self.__apis[api_name]['api'].__module__,
-                    'api_action': self.__apis[api_name]['api'].__module__ + '.' + self.__apis[api_name]['api'].__name__, # noqa
-                    'is_api': False if 'create' in api[role] else True,
-                    'is_anonymous_allowed': self.__apis[api_name]['allowed'],
+                    'api_module': api['api'].__module__,
+                    'api_action': api['api'].__module__ + '.' + api['api'].__name__, # noqa
+                    'is_api': False if 'create' in self.__permissions[api_name][role] else True, # noqa
+                    'is_anonymous_allowed': api['allowed'],
                     'testing_roles': _role_tests
                 }
             )
 
             self.__files_handler.generate_api_permissions_file(
-                self.__apis[api_name]['api'], content
+                api['api'], content
             )
 
             cmd.end_block()
