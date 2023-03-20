@@ -1,8 +1,7 @@
 class Test{{ role_title }}Permissions(BaseTest{{ api_name }}Permissions):
 
     def test_{{ role_filtered_name }}_can_{{ create.can_create }}create(
-            self, drf_client,
-            mock_{{ role_filtered_name }}_authenticate,
+            self, mock_{{ role_filtered_name }}_authenticate,
             mock_create_action):
 
         factory = APIRequestFactory()
@@ -18,8 +17,7 @@ class Test{{ role_title }}Permissions(BaseTest{{ api_name }}Permissions):
         assert response.status_code == status.{{ create.status }}
 
     def test_{{ role_filtered_name }}_can_{{ list.can_list }}list(
-            self, drf_client,
-            mock_{{ role_filtered_name }}_authenticate,
+            self, mock_{{ role_filtered_name }}_authenticate,
             mock_list_action):
 
         factory = APIRequestFactory()
@@ -35,8 +33,7 @@ class Test{{ role_title }}Permissions(BaseTest{{ api_name }}Permissions):
         assert response.status_code == status.{{ list.status }}
 
     def test_{{ role_filtered_name }}_can_{{ retrieve.can_retrieve }}retrieve(
-            self, drf_client,
-            mock_{{ role_filtered_name }}_authenticate,
+            self, mock_{{ role_filtered_name }}_authenticate,
             mock_retrieve_action):
 
         factory = APIRequestFactory()
@@ -52,8 +49,7 @@ class Test{{ role_title }}Permissions(BaseTest{{ api_name }}Permissions):
         assert response.status_code == status.{{ retrieve.status }}
 
     def test_{{ role_filtered_name }}_can_{{ update.can_update }}update(
-            self, drf_client,
-            mock_{{ role_filtered_name }}_authenticate,
+            self, mock_{{ role_filtered_name }}_authenticate,
             mock_update_action):
 
         factory = APIRequestFactory()
@@ -69,8 +65,7 @@ class Test{{ role_title }}Permissions(BaseTest{{ api_name }}Permissions):
         assert response.status_code == status.{{ update.status }}
 
     def test_{{ role_filtered_name }}_can_{{ partial_update.can_partial_update }}partial_update(
-            self, drf_client,
-            mock_{{ role_filtered_name }}_authenticate,
+            self, mock_{{ role_filtered_name }}_authenticate,
             mock_partial_update_action):
 
         factory = APIRequestFactory()
@@ -86,8 +81,7 @@ class Test{{ role_title }}Permissions(BaseTest{{ api_name }}Permissions):
         assert response.status_code == status.{{ partial_update.status }}
 
     def test_{{ role_filtered_name }}_can_{{ destroy.can_destroy }}destroy(
-            self, drf_client,
-            mock_{{ role_filtered_name }}_authenticate,
+            self, mock_{{ role_filtered_name }}_authenticate,
             mock_destroy_action):
 
         factory = APIRequestFactory()

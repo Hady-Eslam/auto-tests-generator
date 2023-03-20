@@ -1,8 +1,7 @@
 class Test{{ role_title }}Permissions(BaseTest{{ api_name }}Permissions):
 
     def test_{{ role_filtered_name }}_can_{{ post.can_post }}post(
-            self, drf_client,
-            mock_{{ role_filtered_name }}_authenticate,
+            self, mock_{{ role_filtered_name }}_authenticate,
             mock_post_method):
 
         factory = APIRequestFactory()
@@ -12,8 +11,7 @@ class Test{{ role_title }}Permissions(BaseTest{{ api_name }}Permissions):
         assert response.status_code == status.{{ post.status }}
 
     def test_{{ role_filtered_name }}_can_{{ get.can_get }}get(
-            self, drf_client,
-            mock_{{ role_filtered_name }}_authenticate,
+            self, mock_{{ role_filtered_name }}_authenticate,
             mock_get_method):
 
         factory = APIRequestFactory()
@@ -23,8 +21,7 @@ class Test{{ role_title }}Permissions(BaseTest{{ api_name }}Permissions):
         assert response.status_code == status.{{ get.status }}
 
     def test_{{ role_filtered_name }}_can_{{ put.can_update }}update(
-            self, drf_client,
-            mock_{{ role_filtered_name }}_authenticate,
+            self, mock_{{ role_filtered_name }}_authenticate,
             mock_put_method):
 
         factory = APIRequestFactory()
@@ -34,8 +31,7 @@ class Test{{ role_title }}Permissions(BaseTest{{ api_name }}Permissions):
         assert response.status_code == status.{{ put.status }}
 
     def test_{{ role_filtered_name }}_can_{{ patch.can_patch }}patch(
-            self, drf_client,
-            mock_{{ role_filtered_name }}_authenticate,
+            self, mock_{{ role_filtered_name }}_authenticate,
             mock_patch_method):
 
         factory = APIRequestFactory()
@@ -45,8 +41,7 @@ class Test{{ role_title }}Permissions(BaseTest{{ api_name }}Permissions):
         assert response.status_code == status.{{ patch.status }}
 
     def test_{{ role_filtered_name }}_can_{{ delete.can_delete }}delete(
-            self, drf_client,
-            mock_{{ role_filtered_name }}_authenticate,
+            self, mock_{{ role_filtered_name }}_authenticate,
             mock_delete_method):
 
         factory = APIRequestFactory()
