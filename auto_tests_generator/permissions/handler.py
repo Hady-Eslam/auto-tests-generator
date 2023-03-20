@@ -156,7 +156,8 @@ class PermissionsHandler:
                         }
 
                 else:
-                    _api_permissions[role] = api[role]
+                    _api_permissions[role] = \
+                        self.__initial_permissions[api_name][role]
 
             _prepared_permissions[api_name] = _api_permissions
 
