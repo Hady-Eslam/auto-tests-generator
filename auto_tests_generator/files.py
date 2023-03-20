@@ -40,7 +40,7 @@ class FilesHandler:
             open(self.__generated_tests_path / "__init__.py", "x")
 
         # Create Utils Folder
-        if not os.path.exists(self.__generated_tests_path):
+        if not os.path.exists(self.__utils_path):
             os.mkdir(self.__utils_path)
             open(self.__utils_path / "__init__.py", "x")
 
