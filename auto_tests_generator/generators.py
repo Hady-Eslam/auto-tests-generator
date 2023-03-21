@@ -56,7 +56,6 @@ class AutoTestsGenerator:
         self.__files_handler.prepare_tests_folder()
 
         if self.__configs['permissions']['generate_tests']:
-            self.__permissions_handler.load_roles()
             self.__permissions_handler.load_permissions()
             self.__permissions_handler.check_permissions()
 

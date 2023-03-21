@@ -3,9 +3,6 @@ import sys
 
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
-from rest_framework import status
-import requests
-import json
 
 from auto_tests_generator.cmd import cmd
 from auto_tests_generator.files import FilesHandler
@@ -15,45 +12,16 @@ class PermissionsHandler:
 
     def __init__(
             self, files_handler: FilesHandler,
-            apps, permissions, auth0_credentials):
+            apps, permissions, roles):
 
         self.__files_handler = files_handler
         self.__apps = apps
-        self.__roles = ['anonymous', 'un-identified-role']
+        self.__roles = ['anonymous', 'un-identified-role'] + roles
         self.__apis = {}
         self.__initial_permissions = permissions
-        self.__auth0_credentials = auth0_credentials
 
         cmd.info("Start Generating Permissions Tests...")
         cmd.new_line()
-
-    def __get_token(self):
-        parameters = {
-            "client_id": self.__auth0_credentials['AUTH0_CLIENT_ID'],
-            "client_secret": self.__auth0_credentials['AUTH0_CLIENT_SECRET'],
-            "audience": self.__auth0_credentials['AUTH0_AUDIENCE'],
-            "grant_type": "client_credentials"
-        }
-        headers = {'content-type': "application/json"}
-        response = requests.post(
-            self.__auth0_credentials['AUTH0_APP_TOKEN_URL'],
-            data=json.dumps(parameters),
-            headers=headers
-        )
-        return response.json()['access_token']
-
-    def load_roles(self):
-        headers = {
-            'Authorization': f"Bearer {self.__get_token()}",
-            'Content-Type': "application/json"
-        }
-        url = f"{self.__auth0_credentials['AUTH0_URL']}roles"
-        response = requests.get(url, headers=headers)
-
-        if response.status_code == status.HTTP_200_OK:
-            self.__roles += [role['name'] for role in response.json()]
-        else:
-            raise Exception("Failed to list users roles")
 
     def load_permissions(self):
         cmd.start_block()
