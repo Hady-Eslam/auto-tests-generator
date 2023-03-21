@@ -13,7 +13,7 @@ class AutoTestsGenerator:
     def __init__(
         self, configs,
         tests_path, isort_settings_path, root_urlconfig,
-        apps, permissions, auth0_credentials
+        apps, permissions, roles
     ):
         self.__configs = configs
 
@@ -39,7 +39,7 @@ class AutoTestsGenerator:
                 files_handler=self.__files_handler,
                 apps=_apps,
                 permissions=permissions,
-                auth0_credentials=auth0_credentials,
+                roles=roles,
             )
 
         # Urls Tests Generator Handler
