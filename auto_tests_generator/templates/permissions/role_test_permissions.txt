@@ -1,8 +1,7 @@
 class Test{{ role_title }}Permissions(BaseTest{{ api_name }}Permissions):
 
     def test_{{ role_filtered_name }}_can_{{ create.can_create }}create(
-            self, mock_{{ role_filtered_name }}_authenticate,
-            mock_create_action):
+            self, mock_{{ role_filtered_name }}_authenticate):
 
         factory = APIRequestFactory()
         request = factory.post('/testing/')
@@ -17,8 +16,7 @@ class Test{{ role_title }}Permissions(BaseTest{{ api_name }}Permissions):
         assert response.status_code == status.{{ create.status }}
 
     def test_{{ role_filtered_name }}_can_{{ list.can_list }}list(
-            self, mock_{{ role_filtered_name }}_authenticate,
-            mock_list_action):
+            self, mock_{{ role_filtered_name }}_authenticate):
 
         factory = APIRequestFactory()
         request = factory.get('/testing/')
@@ -33,8 +31,7 @@ class Test{{ role_title }}Permissions(BaseTest{{ api_name }}Permissions):
         assert response.status_code == status.{{ list.status }}
 
     def test_{{ role_filtered_name }}_can_{{ retrieve.can_retrieve }}retrieve(
-            self, mock_{{ role_filtered_name }}_authenticate,
-            mock_retrieve_action):
+            self, mock_{{ role_filtered_name }}_authenticate):
 
         factory = APIRequestFactory()
         request = factory.get('/testing/')
@@ -49,8 +46,7 @@ class Test{{ role_title }}Permissions(BaseTest{{ api_name }}Permissions):
         assert response.status_code == status.{{ retrieve.status }}
 
     def test_{{ role_filtered_name }}_can_{{ update.can_update }}update(
-            self, mock_{{ role_filtered_name }}_authenticate,
-            mock_update_action):
+            self, mock_{{ role_filtered_name }}_authenticate):
 
         factory = APIRequestFactory()
         request = factory.put('/testing/')
@@ -65,8 +61,7 @@ class Test{{ role_title }}Permissions(BaseTest{{ api_name }}Permissions):
         assert response.status_code == status.{{ update.status }}
 
     def test_{{ role_filtered_name }}_can_{{ partial_update.can_partial_update }}partial_update(
-            self, mock_{{ role_filtered_name }}_authenticate,
-            mock_partial_update_action):
+            self, mock_{{ role_filtered_name }}_authenticate):
 
         factory = APIRequestFactory()
         request = factory.patch('/testing/')
@@ -81,8 +76,7 @@ class Test{{ role_title }}Permissions(BaseTest{{ api_name }}Permissions):
         assert response.status_code == status.{{ partial_update.status }}
 
     def test_{{ role_filtered_name }}_can_{{ destroy.can_destroy }}destroy(
-            self, mock_{{ role_filtered_name }}_authenticate,
-            mock_destroy_action):
+            self, mock_{{ role_filtered_name }}_authenticate):
 
         factory = APIRequestFactory()
         request = factory.delete('/testing/')
