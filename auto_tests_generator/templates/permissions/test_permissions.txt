@@ -14,6 +14,26 @@ class BaseTest{{ api_name }}Permissions:
 {% if is_api %}
         self.view = {{ api_name }}.as_view()
 
+        old_post_method = None
+        if hasattr(self.view.view_class, 'post'):
+            old_post_method = self.view.view_class.post
+
+        old_get_method = None
+        if hasattr(self.view.view_class, 'get'):
+            old_get_method = self.view.view_class.get
+
+        old_put_method = None
+        if hasattr(self.view.view_class, 'put'):
+            old_put_method = self.view.view_class.put
+
+        old_patch_method = None
+        if hasattr(self.view.view_class, 'patch'):
+            old_patch_method = self.view.view_class.patch
+
+        old_delete_method = None
+        if hasattr(self.view.view_class, 'delete'):
+            old_delete_method = self.view.view_class.delete
+
         @staticmethod
         def post(*args, **kwargs):
             return Response(status=status.HTTP_201_CREATED)
@@ -39,6 +59,23 @@ class BaseTest{{ api_name }}Permissions:
         self.view.view_class.put = put
         self.view.view_class.patch = patch
         self.view.view_class.delete = delete
+
+        yield
+
+        if old_post_method:
+            self.view.view_class.post = old_post_method
+
+        if old_get_method:
+            self.view.view_class.get = old_get_method
+
+        if old_put_method:
+            self.view.view_class.put = old_put_method
+
+        if old_patch_method:
+            self.view.view_class.patch = old_patch_method
+
+        if old_delete_method:
+            self.view.view_class.delete = old_delete_method
 {% endif %}
 {% for role in testing_roles %}
 {{ role }}
