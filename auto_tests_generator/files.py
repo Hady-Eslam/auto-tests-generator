@@ -15,6 +15,7 @@ class FilesHandler:
 
     __permissions_path_name = 'permissions'
     __urls_path_name = 'urls'
+    __signals_path_name = 'signals'
 
     def __init__(self, tests_path, current_path, isort_settings_path) -> None:
         self.__tests_path = tests_path
@@ -27,6 +28,7 @@ class FilesHandler:
 
         self.__permissions_path = self.__generated_tests_path / self.__permissions_path_name # noqa
         self.__urls_path = self.__generated_tests_path / self.__urls_path_name
+        self.__signals_path = self.__generated_tests_path / self.__signals_path_name # noqa
 
         self.__templates_path = self.__current_path / 'templates' # noqa
 
@@ -53,6 +55,11 @@ class FilesHandler:
         if not os.path.exists(self.__urls_path):
             os.mkdir(self.__urls_path)
             open(self.__urls_path / "__init__.py", "x")
+
+        # Create Signals folder
+        if not os.path.exists(self.__signals_path):
+            os.mkdir(self.__signals_path)
+            open(self.__signals_path / "__init__.py", "x")
 
     def import_template(self, template_path, context):
         """
@@ -141,6 +148,21 @@ class FilesHandler:
 
     def add_permissions_utils(self, file_name, content):
         file_path = self.__utils_path / file_name
+
+        content = self.__use_black(content)
+
+        with open(file_path, 'w') as file:
+            file.write(content)
+
+        self.__isort_imports(file_path)
+        self.__use_autoflake(file_path)
+
+    ##################################
+    # Models Signals File Operations #
+    ##################################
+
+    def generate_signals_tests_file(self, file_name, content):
+        file_path = self.__signals_path / f'test_{file_name}_signals.py'
 
         content = self.__use_black(content)
 
