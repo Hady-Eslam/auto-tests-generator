@@ -3,6 +3,7 @@ import pathlib
 from auto_tests_generator.files import FilesHandler
 from auto_tests_generator.permissions.handler import PermissionsHandler
 from auto_tests_generator.urls.handler import URLHandler
+from auto_tests_generator.signals.handler import SignalsHandler
 
 
 class AutoTestsGenerator:
@@ -47,6 +48,13 @@ class AutoTestsGenerator:
             self.__urls_handler = URLHandler(
                 files_handler=self.__files_handler,
                 root_urlconfig=root_urlconfig
+            )
+
+        # Signals Tests Generator Handler
+        if self.__configs['signals']['generate_tests']:
+            self.__urls_handler = SignalsHandler(
+                files_handler=self.__files_handler,
+                apps=apps
             )
 
     def prepare(self):
