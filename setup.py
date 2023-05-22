@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='auto_tests_generator',
-    version='0.2.0',
+    version='0.3.0',
     description='Auto Tests Generator',
     url='https://github.com/Hady-Eslam/auto-tests-generator.git',
     author='Hady Eslam',
