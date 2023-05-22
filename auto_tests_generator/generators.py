@@ -52,7 +52,7 @@ class AutoTestsGenerator:
 
         # Signals Tests Generator Handler
         if self.__configs['signals']['generate_tests']:
-            self.__urls_handler = SignalsHandler(
+            self.__signals_handler = SignalsHandler(
                 files_handler=self.__files_handler,
                 apps=apps
             )
@@ -70,6 +70,9 @@ class AutoTestsGenerator:
         if self.__configs['urls']['generate_tests']:
             self.__urls_handler.load_urls()
 
+        if self.__configs['signals']['generate_tests']:
+            self.__signals_handler.load_models()
+
     def generate_tests(self):
         """
             Generate Tests
@@ -79,3 +82,6 @@ class AutoTestsGenerator:
 
         if self.__configs['urls']['generate_tests']:
             self.__urls_handler.generate_tests()
+
+        if self.__configs['urls']['generate_tests']:
+            self.__signals_handler.generate_tests()
