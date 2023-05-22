@@ -83,5 +83,5 @@ class AutoTestsGenerator:
         if self.__configs['urls']['generate_tests']:
             self.__urls_handler.generate_tests()
 
-        if self.__configs['urls']['generate_tests']:
+        if self.__configs['signals']['generate_tests']:
             self.__signals_handler.generate_tests()
