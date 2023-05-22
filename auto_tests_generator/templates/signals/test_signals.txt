@@ -1,0 +1,4 @@
+class Test{{ model.name }}Signals:
+
+    def test_pre_save_signals(self): # noqa
+        pre_save.send(sender={{ model.name }}, instance={{ model.name }}())
