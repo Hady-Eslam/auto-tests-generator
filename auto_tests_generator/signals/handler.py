@@ -30,6 +30,7 @@ class SignalsHandler:
                     "signals/test_signals.txt", {
                         "model": {
                             "name": model.__name__,
+                            "module": model.__module__
                         }
                     }
                 )
