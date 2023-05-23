@@ -1,10 +1,32 @@
-from django.db.models.signals import pre_save
+from django.db.models.signals import pre_save, pre_delete, post_save, post_delete
 from {{ model.module }} import {{ model.name }}
+import pytest
+from django.db.models import ProtectedError
 
 
+@pytest.mark.django_db
 class Test{{ model.name }}Signals:
 
     def test_pre_save_signals(self): # noqa
         pre_save.send(sender={{ model.name }}, instance={{ model.name }}())
+        assert True
 
+    def test_post_save_signals_with_created(self): # noqa
+        post_save.send(sender={{ model.name }}, instance={{ model.name }}.objects.first(), created=True)
+        assert True
+
+    def test_post_save_signals_without_created(self): # noqa
+        post_save.send(sender={{ model.name }}, instance={{ model.name }}(), created=False)
+        assert True
+
+    def test_pre_delete_signals(self): # noqa
+        try:
+            pre_delete.send(sender={{ model.name }}, instance={{ model.name }}())
+        except ProtectedError:
+            pass
+
+        assert True
+
+    def test_post_delete_signals(self): # noqa
+        post_delete.send(sender={{ model.name }}, instance={{ model.name }}())
         assert True
