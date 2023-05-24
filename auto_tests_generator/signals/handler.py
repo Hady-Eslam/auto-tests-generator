@@ -73,13 +73,13 @@ class SignalsHandler:
             for field in model._meta.get_fields():
 
                 if isinstance(field, URLField):
-                    _info['model']['fields'].append({
+                    _info['fields'].append({
                         "name": field.name,
                         "value": '_faker.url()'
                     })
 
                 elif isinstance(field, JSONField):
-                    _info['model']['fields'].append({
+                    _info['fields'].append({
                         "name": field.name,
                         "value": "_faker.json(data_columns={'ID': 'pyint', 'Details': {'Name': 'name', 'Address': 'address'} })" # noqa
                     })
@@ -89,13 +89,13 @@ class SignalsHandler:
                     if field.choices:
                         value = f"_faker.random_element(elemnts={model.__name__}._meta.get_field('{field.name}').choices)" # noqa
 
-                    _info['model']['fields'].append({
+                    _info['fields'].append({
                         "name": field.name,
                         "value": value
                     })
 
                 elif isinstance(field, EmailField):
-                    _info['model']['fields'].append({
+                    _info['fields'].append({
                         "name": field.name,
                         "value": '_faker.email()'
                     })
@@ -105,49 +105,49 @@ class SignalsHandler:
                     if field.choices:
                         value = f"_faker.random_element(elemnts={model.__name__}._meta.get_field('{field.name}').choices)" # noqa
 
-                    _info['model']['fields'].append({
+                    _info['fields'].append({
                         "name": field.name,
                         "value": value
                     })
 
                 elif isinstance(field, IntegerField):
-                    _info['model']['fields'].append({
+                    _info['fields'].append({
                         "name": field.name,
                         "value": "_faker.pyint()"
                     })
 
                 elif isinstance(field, DateTimeField):
-                    _info['model']['fields'].append({
+                    _info['fields'].append({
                         "name": field.name,
                         "value": "_faker.date_time()"
                     })
 
                 elif isinstance(field, DateField):
-                    _info['model']['fields'].append({
+                    _info['fields'].append({
                         "name": field.name,
                         "value": "_faker.date()"
                     })
 
                 elif isinstance(field, BooleanField):
-                    _info['model']['fields'].append({
+                    _info['fields'].append({
                         "name": field.name,
                         "value": "_faker.pybool()"
                     })
 
                 elif isinstance(field, FloatField):
-                    _info['model']['fields'].append({
+                    _info['fields'].append({
                         "name": field.name,
                         "value": "_faker.pyfloat()"
                     })
 
                 elif isinstance(field, DecimalField):
-                    _info['model']['fields'].append({
+                    _info['fields'].append({
                         "name": field.name,
                         "value": "_faker.pydecimal()"
                     })
 
                 elif isinstance(field, UUIDField):
-                    _info['model']['fields'].append({
+                    _info['fields'].append({
                         "name": field.name,
                         "value": "_faker.uuid4()"
                     })
