@@ -65,11 +65,9 @@ class SignalsHandler:
                 continue
 
             _info = {
-                "model": {
-                    "name": model.__name__,
-                    "module": model.__module__,
-                    "fields": []
-                },
+                "name": model.__name__,
+                "module": model.__module__,
+                "fields": []
             }
 
             for field in model._meta.get_fields():
