@@ -53,11 +53,13 @@ class SignalsHandler:
     def __generate_conftest(self):
         self.__files_handler.generate_signals_contest_file(
             self.__files_handler.import_template(
-                "signals/conftest.txt", self.__get_model_info()
+                "signals/conftest.txt", {
+                    "models": self.__get_models_info()
+                }
             )
         )
 
-    def __get_model_info(self):
+    def __get_models_info(self):
         models_info = []
 
         for model in self.__models:
