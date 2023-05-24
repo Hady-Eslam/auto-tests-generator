@@ -16,7 +16,19 @@ class AutoTestsGenerator:
         tests_path, isort_settings_path, root_urlconfig,
         apps, permissions, roles
     ):
-        self.__configs = configs
+        self.__configs = {
+            'permissions': {
+                'generate_tests': False,
+                'apps': 'all',
+            },
+            'urls': {
+                'generate_tests': False
+            },
+            'signals': {
+                'generate_tests': False
+            }
+        }
+        self.__configs.update(**configs)
 
         # Tests/Templates Files Handler
         self.__files_handler = FilesHandler(

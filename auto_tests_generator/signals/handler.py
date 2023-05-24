@@ -2,12 +2,13 @@ import sys
 import inspect
 from django.db.models import Model
 from auto_tests_generator.files import FilesHandler
+from typing import List
 
 
 class SignalsHandler:
 
     def __init__(self, files_handler: FilesHandler, apps) -> None:
-        self.__models = []
+        self.__models: List[Model] = []
         self.__files_handler = files_handler
         self.__apps = apps
 
@@ -24,6 +25,9 @@ class SignalsHandler:
 
     def generate_tests(self):
         for model in self.__models:
+            if model._meta.abstract:
+                continue
+
             self.__files_handler.generate_signals_tests_file(
                 model.__name__,
                 self.__files_handler.import_template(
