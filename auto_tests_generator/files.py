@@ -171,3 +171,14 @@ class FilesHandler:
 
         self.__isort_imports(file_path)
         self.__use_autoflake(file_path)
+
+    def generate_signals_contest_file(self, content):
+        file_path = self.__signals_path / "conftest.py"
+
+        content = self.__use_black(content)
+
+        with open(file_path, 'w') as file:
+            file.write(content)
+
+        self.__isort_imports(file_path)
+        self.__use_autoflake(file_path)

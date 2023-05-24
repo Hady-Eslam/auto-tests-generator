@@ -1,0 +1,15 @@
+import pytest
+import faker
+
+_faker = faker.Faker()
+
+
+@pytest.fixture(scope="function")
+def setup_signals_data():
+    {% for model in models %}
+    from {{ model.module }} import {{ model.name }}
+    {{ model.name }}.objects.create(
+        {% for field in model.fields %}
+        {{ field.name }}={{ field.value }},{% endfor %}
+    )
+    {% endfor %}
