@@ -155,3 +155,5 @@ class SignalsHandler:
                     })
 
             models_info.append(_info)
+
+        return models_info

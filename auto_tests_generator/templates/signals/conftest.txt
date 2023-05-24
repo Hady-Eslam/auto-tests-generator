@@ -4,7 +4,7 @@ import faker
 _faker = faker.Faker()
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="session")
 def setup_signals_data():
     {% for model in models %}
     from {{ model.module }} import {{ model.name }}
