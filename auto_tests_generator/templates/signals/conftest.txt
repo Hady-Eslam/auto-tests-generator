@@ -1,15 +1,60 @@
-import pytest
+{% autoescape off %}import pytest
+from _pytest.monkeypatch import MonkeyPatch
 import faker
 
 _faker = faker.Faker()
 
 
 @pytest.fixture(scope="session")
-def setup_signals_data():
-    {% for model in models %}
-    from {{ model.module }} import {{ model.name }}
-    {{ model.name }}.objects.create(
-        {% for field in model.fields %}
-        {{ field.name }}={{ field.value }},{% endfor %}
+def setup_signals_data(django_db_setup, django_db_blocker):
+
+    monkey_patch = MonkeyPatch()
+    monkey_patch.setattr(
+        "django.db.models.base.pre_save.send",
+        lambda *args, **kwargs: True
+    )
+    monkey_patch.setattr(
+        "django.db.models.base.post_save.send",
+        lambda *args, **kwargs: True
+    )
+
+    with django_db_blocker.unblock():
+        {% for model in models %}
+        from {{ model.module }} import {{ model.name }}
+        {{ model.name }}.save = lambda self, *args, **kwargs: super({{ model.name }}, self).save(*args, **kwargs)
+        {{ model.variable_name }} = {{ model.name }}.objects.create(
+            {% for field in model.fields %}
+            {{ field.name }}={{ field.value }},{% endfor %}
+        )
+        {% endfor %}
+
+    monkey_patch.undo()
+
+@pytest.fixture(autouse=True)
+def auto_use_fixture(setup_signals_data):
+    pass
+
+
+@pytest.fixture(scope='function')
+def mock_celery_tasks():
+    monkey_patch = MonkeyPatch()
+    {% for task in celery_tasks %}
+    from {{ task.module }} import {{ task.name }}
+    monkey_patch.setattr(
+        "{{ task.fullname }}.delay", # noqa
+        lambda *args, **kwargs: {{ task.name }}( # noqa
+            *args, **kwargs
+        )
+    )
+    monkey_patch.setattr(
+        "{{ task.fullname }}.apply_async", # noqa
+        lambda *args, **kwargs: {{ task.name }}( # noqa
+            **kwargs['kwargs']
+        ) if 'kwargs' in kwargs else {{ task.name }}( # noqa
+            *args[0]
+        )
     )
     {% endfor %}
+    yield
+    monkey_patch.undo()
+{% endautoescape %}

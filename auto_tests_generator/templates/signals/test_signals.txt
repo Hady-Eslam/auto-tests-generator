@@ -7,19 +7,52 @@ from django.db.models import ProtectedError
 @pytest.mark.django_db
 class Test{{ model.name }}Signals:
 
-    def test_pre_save_signals(self): # noqa
+    def test_pre_save_signals(self, mock_celery_tasks): # noqa
         pre_save.send(sender={{ model.name }}, instance={{ model.name }}())
         assert True
 
-    def test_post_save_signals_with_created(self): # noqa
+    def test_pre_save_signals_with_model_full_data(self, mock_celery_tasks): # noqa
+        instance = {{ model.name }}()
+        {% for field in model.forien_keys %}
+        {% if field.can_import %}
+        from {{ field.module }} import {{ field.model }}
+        {% endif %}
+        instance.{{ field.name }} = {{ field.model }}.objects.last()
+        {% endfor %}
+        pre_save.send(sender={{ model.name }}, instance=instance)
+        assert True
+
+    def test_post_save_signals_with_created(self, mock_celery_tasks): # noqa
         post_save.send(sender={{ model.name }}, instance={{ model.name }}.objects.first(), created=True)
         assert True
 
-    def test_post_save_signals_without_created(self): # noqa
+    def test_post_save_signals_with_created_with_full_data(self, mock_celery_tasks): # noqa
+        instance = {{ model.name }}.objects.first()
+        {% for field in model.forien_keys %}
+        {% if field.can_import %}
+        from {{ field.module }} import {{ field.model }}
+        {% endif %}
+        instance.{{ field.name }} = {{ field.model }}.objects.last()
+        {% endfor %}
+        post_save.send(sender={{ model.name }}, instance=instance, created=True)
+        assert True
+
+    def test_post_save_signals_without_created(self, mock_celery_tasks): # noqa
         post_save.send(sender={{ model.name }}, instance={{ model.name }}(), created=False)
         assert True
 
-    def test_pre_delete_signals(self): # noqa
+    def test_post_save_signals_without_created_with_full_data(self, mock_celery_tasks): # noqa
+        instance = {{ model.name }}()
+        {% for field in model.forien_keys %}
+        {% if field.can_import %}
+        from {{ field.module }} import {{ field.model }}
+        {% endif %}
+        instance.{{ field.name }} = {{ field.model }}.objects.last()
+        {% endfor %}
+        post_save.send(sender={{ model.name }}, instance=instance, created=False)
+        assert True
+
+    def test_pre_delete_signals(self, mock_celery_tasks): # noqa
         try:
             pre_delete.send(sender={{ model.name }}, instance={{ model.name }}())
         except ProtectedError:
@@ -27,6 +60,32 @@ class Test{{ model.name }}Signals:
 
         assert True
 
-    def test_post_delete_signals(self): # noqa
+    def test_pre_delete_signals_with_full_data(self, mock_celery_tasks): # noqa
+        instance = {{ model.name }}()
+        {% for field in model.forien_keys %}
+        {% if field.can_import %}
+        from {{ field.module }} import {{ field.model }}
+        {% endif %}
+        instance.{{ field.name }} = {{ field.model }}.objects.last()
+        {% endfor %}
+        try:
+            pre_delete.send(sender={{ model.name }}, instance=instance)
+        except ProtectedError:
+            pass
+
+        assert True
+
+    def test_post_delete_signals(self, mock_celery_tasks): # noqa
         post_delete.send(sender={{ model.name }}, instance={{ model.name }}())
+        assert True
+
+    def test_post_delete_signals_with_full_data(self, mock_celery_tasks): # noqa
+        instance = {{ model.name }}()
+        {% for field in model.forien_keys %}
+        {% if field.can_import %}
+        from {{ field.module }} import {{ field.model }}
+        {% endif %}
+        instance.{{ field.name }} = {{ field.model }}.objects.last()
+        {% endfor %}
+        post_delete.send(sender={{ model.name }}, instance=instance)
         assert True

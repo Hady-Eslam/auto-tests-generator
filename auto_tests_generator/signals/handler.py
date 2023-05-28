@@ -4,10 +4,12 @@ from django.db.models import Model
 from auto_tests_generator.files import FilesHandler
 from typing import List
 import faker
+from celery import _state
+from django.contrib.postgres.fields import ArrayField
 from django.db.models import (
     URLField, JSONField, TextField, CharField, IntegerField, DateField,
     BooleanField, FloatField, DecimalField, DateTimeField, EmailField,
-    UUIDField,
+    UUIDField, ForeignKey
 )
 
 _faker = faker.Faker()
@@ -31,6 +33,28 @@ class SignalsHandler:
                             _member_class.__module__ == name:
                         self.__models.append(_member_class)
 
+        self.__rearrange_models()
+
+    def __rearrange_models(self):
+        _models = []
+        _models_with_not_null_forien_keys = []
+
+        for model in self.__models:
+            tricky = False
+            for field in model._meta.get_fields():
+                if isinstance(field, ForeignKey) and not field.null:
+                    tricky = True
+
+            if tricky:
+                _models_with_not_null_forien_keys.append(model)
+            else:
+                _models.append(model)
+
+        self.__models: List[Model] = [
+            *_models,
+            *_models_with_not_null_forien_keys
+        ]
+
     def generate_tests(self):
         self.__generate_conftest()
 
@@ -44,20 +68,48 @@ class SignalsHandler:
                     "signals/test_signals.txt", {
                         "model": {
                             "name": model.__name__,
-                            "module": model.__module__
+                            "module": model.__module__,
+                            "forien_keys": self.__get_model_forien_keys(model)
                         }
                     }
                 )
             )
 
+    def __get_model_forien_keys(self, model: Model):
+        _fields = []
+        for field in model._meta.get_fields():
+            if not field.auto_created and isinstance(field, ForeignKey):
+                _fields.append({
+                    'name': field.name,
+                    'can_import': field.related_model.__name__ != model.__name__, # noqa
+                    'module': field.related_model.__module__,
+                    'model': field.related_model.__name__,
+                })
+
+        return _fields
+
     def __generate_conftest(self):
         self.__files_handler.generate_signals_contest_file(
             self.__files_handler.import_template(
                 "signals/conftest.txt", {
-                    "models": self.__get_models_info()
+                    "models": self.__get_models_info(),
+                    "celery_tasks": self.__get_celery_tasks()
                 }
             )
         )
+
+    def __get_celery_tasks(self):
+        _tasks = []
+        for task_name, task in _state.get_current_app().tasks.items():
+            _split_task_name = task_name.split('.')
+            if _split_task_name[0] not in self.__apps:
+                continue
+            _tasks.append({
+                'module': '.'.join(_split_task_name[:-1]),
+                'name': _split_task_name[-1],
+                'fullname': task_name,
+            })
+        return _tasks
 
     def __get_models_info(self):
         models_info = []
@@ -69,12 +121,16 @@ class SignalsHandler:
             _info = {
                 "name": model.__name__,
                 "module": model.__module__,
+                "variable_name": f"_{model.__name__.lower()}",
                 "fields": []
             }
 
             for field in model._meta.get_fields():
 
-                if isinstance(field, URLField):
+                if field.auto_created:
+                    continue
+
+                elif isinstance(field, URLField):
                     _info['fields'].append({
                         "name": field.name,
                         "value": '_faker.url()'
@@ -89,7 +145,7 @@ class SignalsHandler:
                 elif isinstance(field, TextField):
                     value = "_faker.paragraph(nb_sentences=5)"
                     if field.choices:
-                        value = f"_faker.random_element(elemnts={model.__name__}._meta.get_field('{field.name}').choices)" # noqa
+                        value = f"_faker.random_element(elements={model.__name__}._meta.get_field('{field.name}').choices)" # noqa
 
                     _info['fields'].append({
                         "name": field.name,
@@ -103,9 +159,9 @@ class SignalsHandler:
                     })
 
                 elif isinstance(field, CharField):
-                    value = "_faker.word()"
+                    value = f"_faker.word()[:{field.max_length}]"
                     if field.choices:
-                        value = f"_faker.random_element(elemnts={model.__name__}._meta.get_field('{field.name}').choices)" # noqa
+                        value = f"_faker.random_element(elements={model.__name__}._meta.get_field('{field.name}').choices)" # noqa
 
                     _info['fields'].append({
                         "name": field.name,
@@ -143,15 +199,29 @@ class SignalsHandler:
                     })
 
                 elif isinstance(field, DecimalField):
+                    right_digits = field.decimal_places
+                    left_digits = field.max_digits - field.decimal_places
                     _info['fields'].append({
                         "name": field.name,
-                        "value": "_faker.pydecimal()"
+                        "value": f"_faker.pydecimal(left_digits={left_digits}, right_digits={right_digits})" # noqa
                     })
 
                 elif isinstance(field, UUIDField):
                     _info['fields'].append({
                         "name": field.name,
                         "value": "_faker.uuid4()"
+                    })
+
+                elif isinstance(field, ArrayField):
+                    _info['fields'].append({
+                        "name": field.name,
+                        "value": "[]"
+                    })
+
+                elif isinstance(field, ForeignKey) and not field.null:
+                    _info['fields'].append({
+                        "name": field.name,
+                        "value": f"_{field.related_model.__name__.lower()}"
                     })
 
             models_info.append(_info)
