@@ -76,7 +76,7 @@ class AutoTestsGenerator:
 
             self.__signals_handler = SignalsHandler(
                 files_handler=self.__files_handler,
-                apps=apps
+                apps=_apps
             )
 
     def prepare(self):
