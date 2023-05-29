@@ -25,7 +25,8 @@ class AutoTestsGenerator:
                 'generate_tests': False
             },
             'signals': {
-                'generate_tests': False
+                'generate_tests': False,
+                'apps': 'all',
             }
         }
         self.__configs.update(**configs)
@@ -64,6 +65,15 @@ class AutoTestsGenerator:
 
         # Signals Tests Generator Handler
         if self.__configs['signals']['generate_tests']:
+            _apps = []
+            if self.__configs['signals']['apps'] == 'all':
+                _apps = apps
+            else:
+                _apps = self.__configs['signals']['apps'].split(',')
+                for _app in _apps:
+                    if _app not in apps:
+                        raise Exception(f"No app with name {_app} was found")
+
             self.__signals_handler = SignalsHandler(
                 files_handler=self.__files_handler,
                 apps=apps
