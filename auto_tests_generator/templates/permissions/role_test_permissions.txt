@@ -9,7 +9,7 @@ class Test{{ role_title }}Permissions(BaseTest{{ api_name }}Permissions):
 
         view = {{ api_name }}.as_view({'post': 'create'})
         def fake_create(*args, **kwargs):
-            Response(status=status.HTTP_201_CREATED)
+            return Response(status=status.HTTP_201_CREATED)
 
         view.create = fake_create
         response = view(request, version='v1')
@@ -25,7 +25,7 @@ class Test{{ role_title }}Permissions(BaseTest{{ api_name }}Permissions):
 
         view = {{ api_name }}.as_view({'get': 'list'})
         def fake_list(*args, **kwargs):
-            Response(status=status.HTTP_200_OK)
+            return Response(status=status.HTTP_200_OK)
 
         view.list = fake_list
         response = view(request, version='v1')
@@ -41,7 +41,7 @@ class Test{{ role_title }}Permissions(BaseTest{{ api_name }}Permissions):
 
         view = {{ api_name }}.as_view({'get': 'retrieve'})
         def fake_retrieve(*args, **kwargs):
-            Response(status=status.HTTP_200_OK)
+            return Response(status=status.HTTP_200_OK)
 
         view.retrieve = fake_retrieve
         response = view(request, version='v1')
@@ -57,7 +57,7 @@ class Test{{ role_title }}Permissions(BaseTest{{ api_name }}Permissions):
 
         view = {{ api_name }}.as_view({'put': 'update'})
         def fake_update(*args, **kwargs):
-            Response(status=status.HTTP_200_OK)
+            return Response(status=status.HTTP_200_OK)
 
         view.update = fake_update
         response = view(request, version='v1')
@@ -73,7 +73,7 @@ class Test{{ role_title }}Permissions(BaseTest{{ api_name }}Permissions):
 
         view = {{ api_name }}.as_view({'patch': 'partial_update'})
         def fake_partial_update(*args, **kwargs):
-            Response(status=status.HTTP_200_OK)
+            return Response(status=status.HTTP_200_OK)
 
         view.partial_update = fake_partial_update
         response = view(request, version='v1')
@@ -89,7 +89,7 @@ class Test{{ role_title }}Permissions(BaseTest{{ api_name }}Permissions):
 
         view = {{ api_name }}.as_view({'delete': 'destroy'})
         def fake_destroy(*args, **kwargs):
-            Response(status=status.HTTP_204_NO_CONTENT)
+            return Response(status=status.HTTP_204_NO_CONTENT)
 
         view.destroy = fake_destroy
         response = view(request, version='v1')
